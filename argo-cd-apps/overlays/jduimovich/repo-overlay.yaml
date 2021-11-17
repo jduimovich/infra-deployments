@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application 
+metadata:
+  name: build
+spec:  
+  source: 
+    repoURL: https://github.com/jduimovich/infra-deployments.git
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application 
+metadata:
+  name: gitops
+spec:  
+  source: 
+    repoURL: https://github.com/jduimovich/infra-deployments.git
+
+
