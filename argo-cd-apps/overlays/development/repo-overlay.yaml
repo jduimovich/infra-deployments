@@ -21,3 +21,11 @@ metadata:
 spec:
   source:
     repoURL: https://github.com/jduimovich/infra-deployments.git
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: has
+spec:
+  source:
+    repoURL: https://github.com/jduimovich/infra-deployments.git
