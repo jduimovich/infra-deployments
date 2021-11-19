@@ -25,9 +25,8 @@ PATCHOVERLAY="$(printf '.spec.source.path="%q"' $OVERLAYDIR)"
 # that to replace the specific component they are evolving 
 
 # Two calls to kubectl apply for later refactoring into bootstrap and dev patchs
+
 echo
-echo "Setting the root application to come from $GITURL"
-yq  e "$PATCHREPO" $MANIFEST | kubectl apply -f -
-echo "Setting the overlay directory to $OVERLAYDIR" 
-yq  e "$PATCHOVERLAY" $MANIFEST | kubectl apply -f -
+echo "Setting the application repo to $GITURL overlay to $OVERLAYDIR"  
+yq  e "$PATCHOVERLAY" $MANIFEST | yq  e "$PATCHREPO" - | kubectl apply -f -
  

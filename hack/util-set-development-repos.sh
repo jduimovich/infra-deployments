@@ -14,26 +14,7 @@
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/..
 MANIFEST=$ROOT/argo-cd-apps/app-of-apps/all-applications-staging.yaml
 GITURL=$1
-OVERLAYDIR=argo-cd-apps/overlays/$2
-
-PATCHREPO="$(printf '.spec.source.repoURL="%q"' $GITURL)" 
-PATCHOVERLAY="$(printf '.spec.source.path="%q"' $OVERLAYDIR)"  
-
-# this can be a single apply but I think we should move the repo name update into the bootstrap-cluster.sh script
-# yq  e "$PATCHOVERLAY" $MANIFEST | yq  e "$PATCHREPO" - | kubectl apply -f -
-
-# the directory path and content can be updated selectively per user in their fork
-# that to replace the specific component they are evolving 
-
-# 2 kubectl apply for later refactoring 
-echo
-echo "Setting the root application to come from $GITURL"
-yq  e "$PATCHREPO" $MANIFEST | kubectl apply -f -
-echo "Setting the overlay directory to $OVERLAYDIR" 
-yq  e "$PATCHOVERLAY" $MANIFEST | kubectl apply -f -
-
-# this section only gets run when setting the directory to development
-# as the development overlay uses kustomize to set override default repos
+OVERLAYDIR=argo-cd-apps/overlays/$2  
 
 echo
 echo In dev mode, verify that argo-cd-apps/overlays/development includes a kustomization that points to this repo
