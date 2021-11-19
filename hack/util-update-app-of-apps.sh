@@ -18,13 +18,8 @@ OVERLAYDIR=argo-cd-apps/overlays/$2
 PATCHREPO="$(printf '.spec.source.repoURL="%q"' $GITURL)" 
 PATCHOVERLAY="$(printf '.spec.source.path="%q"' $OVERLAYDIR)"  
 
-# this can be a single apply but I think we should move the repo name update into the bootstrap-cluster.sh script
-# yq  e "$PATCHOVERLAY" $MANIFEST | yq  e "$PATCHREPO" - | kubectl apply -f -
-
-# the directory path and content can be updated selectively per user in their fork
-# that to replace the specific component they are evolving 
-
-# Two calls to kubectl apply for later refactoring into bootstrap and dev patchs
+# the overlay content can be updated selectively per user in their fork
+# to replace the specific component they are evolving  
 
 echo
 echo "Setting the application repo to $GITURL overlay to $OVERLAYDIR"  
