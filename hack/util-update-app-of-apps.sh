@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Redirect the root app-of-apps to the users local git repo (usually a fork)
+# if that repo is a simple clone this replacement is a noop
+# if that repo is a fork, this repo will updated to the forked repo
+
+# This allows any component to be replaced via gitops via a kustomize development directory
+# That directory needs to be modified in the users fork when replacing any components in their cluster
+# This will minimize the chance of error in pull requests to upstream which may accidentally include
+# references to the forked repo.
+# note, if accidental merges are accepted in the development directory, they will not affect staging. 
+
+ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/..
+MANIFEST=$ROOT/argo-cd-apps/app-of-apps/all-applications-staging.yaml
+GITURL=$1
+OVERLAYDIR=argo-cd-apps/overlays/$2
+
+PATCHREPO="$(printf '.spec.source.repoURL="%q"' $GITURL)" 
+PATCHOVERLAY="$(printf '.spec.source.path="%q"' $OVERLAYDIR)"  
+
+# this can be a single apply but I think we should move the repo name update into the bootstrap-cluster.sh script
+# yq  e "$PATCHOVERLAY" $MANIFEST | yq  e "$PATCHREPO" - | kubectl apply -f -
+
+# the directory path and content can be updated selectively per user in their fork
+# that to replace the specific component they are evolving 
+
+# Two calls to kubectl apply for later refactoring into bootstrap and dev patchs
+echo
+echo "Setting the root application to come from $GITURL"
+yq  e "$PATCHREPO" $MANIFEST | kubectl apply -f -
+echo "Setting the overlay directory to $OVERLAYDIR" 
+yq  e "$PATCHOVERLAY" $MANIFEST | kubectl apply -f -
+ 
