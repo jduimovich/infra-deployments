@@ -1,7 +1,8 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: as-show-workspace 
+  name: as-show-workspace   
+  namespace: build-templates
 spec:
   steps:
     - name: show-workspace-contents
