@@ -3,8 +3,8 @@ kind: Pipeline
 metadata: 
   labels:
     "pipelines.openshift.io/used-by" : "build-cloud"
-    "pipelines.openshift.io/runtime" : "java"
-    "pipelines.openshift.io/strategy" : "s2i"
+    "pipelines.openshift.io/runtime" : "node.js"
+    "pipelines.openshift.io/strategy" : "docker"
   name: as-default-pipeline 
   namespace: build-templates
 spec:
