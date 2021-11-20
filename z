@@ -1,0 +1,327 @@
+apiVersion: v1
+items:
+  - apiVersion: tekton.dev/v1beta1
+    kind: Pipeline
+    metadata:
+      annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        kubectl.kubernetes.io/last-applied-configuration: |
+          {"apiVersion":"tekton.dev/v1beta1","kind":"Pipeline","metadata":{"annotations":{"argocd.argoproj.io/sync-options":"SkipDryRunOnMissingResource=true"},"creationTimestamp":"2021-11-20T16:45:57Z","generation":1,"labels":{"app.kubernetes.io/instance":"build","pipelines.openshift.io/runtime":"java","pipelines.openshift.io/strategy":"s2i","pipelines.openshift.io/used-by":"build-cloud"},"managedFields":[{"apiVersion":"tekton.dev/v1beta1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:argocd.argoproj.io/sync-options":{},"f:kubectl.kubernetes.io/last-applied-configuration":{}},"f:labels":{".":{},"f:app.kubernetes.io/instance":{},"f:pipelines.openshift.io/runtime":{},"f:pipelines.openshift.io/strategy":{},"f:pipelines.openshift.io/used-by":{}}},"f:spec":{".":{},"f:params":{},"f:tasks":{},"f:workspaces":{}}},"manager":"argocd-application-controller","operation":"Update","time":"2021-11-20T16:45:57Z"}],"name":"as-default-pipeline","namespace":"build-templates","resourceVersion":"2354651","uid":"45c8368f-4921-4733-9e36-6a144ae83ec3"},"spec":{"params":[{"description":"Source Repository URL","name":"git-url","type":"string"},{"description":"Fully Qualified Output Image","name":"output-image","type":"string"}],"tasks":[{"name":"clone-using-cluster-task","params":[{"name":"url","value":"$(params.git-url)"}],"taskRef":{"kind":"ClusterTask","name":"git-clone"},"workspaces":[{"name":"output","workspace":"workspace"}]},{"name":"as-show-workspace","runAfter":["clone-using-cluster-task"],"taskRef":{"kind":"Task","name":"as-show-workspace"},"workspaces":[{"name":"source","workspace":"workspace"}]},{"name":"buildah","params":[{"name":"IMAGE","value":"$(params.output-image)"},{"name":"BUILDER_IMAGE","value":"registry.redhat.io/rhel8/buildah@sha256:99cae35f40c7ec050fed3765b2b27e0b8bbea2aa2da7c16408e2ca13c60ff8ee"},{"name":"STORAGE_DRIVER","value":"vfs"},{"name":"DOCKERFILE","value":"./Dockerfile"},{"name":"CONTEXT","value":"/workspace/source"},{"name":"TLSVERIFY","value":"true"},{"name":"FORMAT","value":"oci"}],"runAfter":["as-show-workspace"],"taskRef":{"kind":"ClusterTask","name":"buildah"},"workspaces":[{"name":"source","workspace":"workspace"}]}],"workspaces":[{"name":"workspace"}]}}
+      creationTimestamp: "2021-11-20T16:45:57Z"
+      generation: 1
+      labels:
+        app.kubernetes.io/instance: build
+        pipelines.openshift.io/runtime: java
+        pipelines.openshift.io/strategy: s2i
+        pipelines.openshift.io/used-by: build-cloud
+      managedFields:
+        - apiVersion: tekton.dev/v1beta1
+          fieldsType: FieldsV1
+          fieldsV1:
+            f:metadata:
+              f:annotations:
+                .: {}
+                f:argocd.argoproj.io/sync-options: {}
+              f:labels:
+                .: {}
+                f:app.kubernetes.io/instance: {}
+                f:pipelines.openshift.io/runtime: {}
+                f:pipelines.openshift.io/strategy: {}
+                f:pipelines.openshift.io/used-by: {}
+            f:spec:
+              .: {}
+              f:params: {}
+              f:tasks: {}
+              f:workspaces: {}
+          manager: argocd-application-controller
+          operation: Update
+          time: "2021-11-20T16:45:57Z"
+        - apiVersion: tekton.dev/v1beta1
+          fieldsType: FieldsV1
+          fieldsV1:
+            f:metadata:
+              f:annotations:
+                f:kubectl.kubernetes.io/last-applied-configuration: {}
+          manager: kubectl-client-side-apply
+          operation: Update
+          time: "2021-11-20T17:05:29Z"
+      name: as-default-pipeline
+      namespace: build-templates
+      resourceVersion: "2372738"
+      uid: 45c8368f-4921-4733-9e36-6a144ae83ec3
+    spec:
+      params:
+        - description: Source Repository URL
+          name: git-url
+          type: string
+        - description: Fully Qualified Output Image
+          name: output-image
+          type: string
+      tasks:
+        - name: clone-using-cluster-task
+          params:
+            - name: url
+              value: $(params.git-url)
+          taskRef:
+            kind: ClusterTask
+            name: git-clone
+          workspaces:
+            - name: output
+              workspace: workspace
+        - name: as-show-workspace
+          runAfter:
+            - clone-using-cluster-task
+          taskRef:
+            kind: Task
+            name: as-show-workspace
+          workspaces:
+            - name: source
+              workspace: workspace
+        - name: buildah
+          params:
+            - name: IMAGE
+              value: $(params.output-image)
+            - name: BUILDER_IMAGE
+              value: registry.redhat.io/rhel8/buildah@sha256:99cae35f40c7ec050fed3765b2b27e0b8bbea2aa2da7c16408e2ca13c60ff8ee
+            - name: STORAGE_DRIVER
+              value: vfs
+            - name: DOCKERFILE
+              value: ./Dockerfile
+            - name: CONTEXT
+              value: /workspace/source
+            - name: TLSVERIFY
+              value: "true"
+            - name: FORMAT
+              value: oci
+          runAfter:
+            - as-show-workspace
+          taskRef:
+            kind: ClusterTask
+            name: buildah
+          workspaces:
+            - name: source
+              workspace: workspace
+      workspaces:
+        - name: workspace
+  - apiVersion: tekton.dev/v1beta1
+    kind: Pipeline
+    metadata:
+      annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        kubectl.kubernetes.io/last-applied-configuration: |
+          {"apiVersion":"tekton.dev/v1beta1","kind":"Pipeline","metadata":{"annotations":{"argocd.argoproj.io/sync-options":"SkipDryRunOnMissingResource=true"},"creationTimestamp":"2021-11-18T22:21:35Z","generation":1,"labels":{"app.kubernetes.io/instance":"build","pipelines.openshift.io/runtime":"java","pipelines.openshift.io/strategy":"s2i","pipelines.openshift.io/used-by":"build-cloud"},"managedFields":[{"apiVersion":"tekton.dev/v1beta1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:argocd.argoproj.io/sync-options":{},"f:kubectl.kubernetes.io/last-applied-configuration":{}},"f:labels":{".":{},"f:app.kubernetes.io/instance":{},"f:pipelines.openshift.io/runtime":{},"f:pipelines.openshift.io/strategy":{},"f:pipelines.openshift.io/used-by":{}}},"f:spec":{".":{},"f:params":{},"f:tasks":{},"f:workspaces":{}}},"manager":"argocd-application-controller","operation":"Update","time":"2021-11-18T22:21:35Z"}],"name":"java-builder","namespace":"build-templates","resourceVersion":"48243","uid":"81a4a5f7-69c5-4c2e-9ed3-c3e5a638065c"},"spec":{"params":[{"description":"Output image","name":"IMAGE","type":"string"},{"description":"The git repository URL containing source code to be build","name":"GIT_REPO","type":"string"},{"default":".","description":"The path to your source code","name":"PATH_CONTEXT","type":"string"}],"tasks":[{"name":"git-clone","params":[{"name":"url","value":"$(params.GIT_REPO)"},{"name":"submodules","value":"true"},{"name":"depth","value":"1"},{"name":"sslVerify","value":"true"},{"name":"deleteExisting","value":"true"},{"name":"verbose","value":"true"},{"name":"gitInitImage","value":"registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:da1aedf0b17f2b9dd2a46edc93ff1c0582989414b902a28cd79bad8a035c9ea4"},{"name":"userHome","value":"/tekton/home"}],"taskRef":{"kind":"ClusterTask","name":"git-clone"},"workspaces":[{"name":"output","workspace":"java-source-code"}]},{"name":"s2i-java-1-5-0","params":[{"name":"VERSION","value":"openjdk-11-ubi8"},{"name":"PATH_CONTEXT","value":"$(params.PATH_CONTEXT)"},{"name":"TLSVERIFY","value":"true"},{"name":"MAVEN_CLEAR_REPO","value":"false"},{"name":"IMAGE","value":"$(params.IMAGE)"},{"name":"BUILDER_IMAGE","value":"registry.redhat.io/rhel8/buildah@sha256:99cae35f40c7ec050fed3765b2b27e0b8bbea2aa2da7c16408e2ca13c60ff8ee"}],"runAfter":["git-clone"],"taskRef":{"kind":"ClusterTask","name":"s2i-java-1-5-0"},"workspaces":[{"name":"source","workspace":"java-source-code"}]}],"workspaces":[{"name":"java-source-code"}]}}
+      creationTimestamp: "2021-11-18T22:21:35Z"
+      generation: 1
+      labels:
+        app.kubernetes.io/instance: build
+        pipelines.openshift.io/runtime: java
+        pipelines.openshift.io/strategy: s2i
+        pipelines.openshift.io/used-by: build-cloud
+      managedFields:
+        - apiVersion: tekton.dev/v1beta1
+          fieldsType: FieldsV1
+          fieldsV1:
+            f:metadata:
+              f:annotations:
+                .: {}
+                f:argocd.argoproj.io/sync-options: {}
+              f:labels:
+                .: {}
+                f:app.kubernetes.io/instance: {}
+                f:pipelines.openshift.io/runtime: {}
+                f:pipelines.openshift.io/strategy: {}
+                f:pipelines.openshift.io/used-by: {}
+            f:spec:
+              .: {}
+              f:params: {}
+              f:tasks: {}
+              f:workspaces: {}
+          manager: argocd-application-controller
+          operation: Update
+          time: "2021-11-18T22:21:35Z"
+        - apiVersion: tekton.dev/v1beta1
+          fieldsType: FieldsV1
+          fieldsV1:
+            f:metadata:
+              f:annotations:
+                f:kubectl.kubernetes.io/last-applied-configuration: {}
+          manager: kubectl-client-side-apply
+          operation: Update
+          time: "2021-11-20T17:05:29Z"
+      name: java-builder
+      namespace: build-templates
+      resourceVersion: "2372739"
+      uid: 81a4a5f7-69c5-4c2e-9ed3-c3e5a638065c
+    spec:
+      params:
+        - description: Output image
+          name: IMAGE
+          type: string
+        - description: The git repository URL containing source code to be build
+          name: GIT_REPO
+          type: string
+        - default: .
+          description: The path to your source code
+          name: PATH_CONTEXT
+          type: string
+      tasks:
+        - name: git-clone
+          params:
+            - name: url
+              value: $(params.GIT_REPO)
+            - name: submodules
+              value: "true"
+            - name: depth
+              value: "1"
+            - name: sslVerify
+              value: "true"
+            - name: deleteExisting
+              value: "true"
+            - name: verbose
+              value: "true"
+            - name: gitInitImage
+              value: registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:da1aedf0b17f2b9dd2a46edc93ff1c0582989414b902a28cd79bad8a035c9ea4
+            - name: userHome
+              value: /tekton/home
+          taskRef:
+            kind: ClusterTask
+            name: git-clone
+          workspaces:
+            - name: output
+              workspace: java-source-code
+        - name: s2i-java-1-5-0
+          params:
+            - name: VERSION
+              value: openjdk-11-ubi8
+            - name: PATH_CONTEXT
+              value: $(params.PATH_CONTEXT)
+            - name: TLSVERIFY
+              value: "true"
+            - name: MAVEN_CLEAR_REPO
+              value: "false"
+            - name: IMAGE
+              value: $(params.IMAGE)
+            - name: BUILDER_IMAGE
+              value: registry.redhat.io/rhel8/buildah@sha256:99cae35f40c7ec050fed3765b2b27e0b8bbea2aa2da7c16408e2ca13c60ff8ee
+          runAfter:
+            - git-clone
+          taskRef:
+            kind: ClusterTask
+            name: s2i-java-1-5-0
+          workspaces:
+            - name: source
+              workspace: java-source-code
+      workspaces:
+        - name: java-source-code
+  - apiVersion: tekton.dev/v1beta1
+    kind: Pipeline
+    metadata:
+      annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        kubectl.kubernetes.io/last-applied-configuration: |
+          {"apiVersion":"tekton.dev/v1beta1","kind":"Pipeline","metadata":{"annotations":{"argocd.argoproj.io/sync-options":"SkipDryRunOnMissingResource=true"},"creationTimestamp":"2021-11-18T22:21:35Z","generation":1,"labels":{"app.kubernetes.io/instance":"build","pipelines.openshift.io/runtime":"nodejs","pipelines.openshift.io/strategy":"s2i","pipelines.openshift.io/used-by":"build-cloud"},"managedFields":[{"apiVersion":"tekton.dev/v1beta1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:argocd.argoproj.io/sync-options":{},"f:kubectl.kubernetes.io/last-applied-configuration":{}},"f:labels":{".":{},"f:app.kubernetes.io/instance":{},"f:pipelines.openshift.io/runtime":{},"f:pipelines.openshift.io/strategy":{},"f:pipelines.openshift.io/used-by":{}}},"f:spec":{".":{},"f:params":{},"f:tasks":{},"f:workspaces":{}}},"manager":"argocd-application-controller","operation":"Update","time":"2021-11-18T22:21:35Z"}],"name":"nodejs-builder","namespace":"build-templates","resourceVersion":"48242","uid":"b24efc0c-2674-4a88-ab98-7a8084ed4bb3"},"spec":{"params":[{"description":"Output image","name":"IMAGE","type":"string"},{"description":"The git repository URL containing source code to be build","name":"GIT_REPO","type":"string"},{"description":"The path to your source code","name":"PATH_CONTEXT","type":"string"}],"tasks":[{"name":"s2i-nodejs-1-5-0","params":[{"name":"VERSION","value":"14-ubi8"},{"name":"PATH_CONTEXT","value":"$(params.PATH_CONTEXT)"},{"name":"TLSVERIFY","value":"true"},{"name":"IMAGE","value":"$(params.IMAGE)"},{"name":"BUILDER_IMAGE","value":"registry.redhat.io/rhel8/buildah@sha256:99cae35f40c7ec050fed3765b2b27e0b8bbea2aa2da7c16408e2ca13c60ff8ee"}],"runAfter":["git-clone-1-5-0"],"taskRef":{"kind":"ClusterTask","name":"s2i-nodejs-1-5-0"},"workspaces":[{"name":"source","workspace":"nodejs-source-code"}]},{"name":"git-clone-1-5-0","params":[{"name":"url","value":"$(params.GIT_REPO)"},{"name":"submodules","value":"true"},{"name":"depth","value":"1"},{"name":"sslVerify","value":"true"},{"name":"deleteExisting","value":"true"},{"name":"verbose","value":"true"},{"name":"gitInitImage","value":"registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:da1aedf0b17f2b9dd2a46edc93ff1c0582989414b902a28cd79bad8a035c9ea4"},{"name":"userHome","value":"/tekton/home"}],"taskRef":{"kind":"ClusterTask","name":"git-clone-1-5-0"},"workspaces":[{"name":"output","workspace":"nodejs-source-code"}]}],"workspaces":[{"name":"nodejs-source-code"}]}}
+      creationTimestamp: "2021-11-18T22:21:35Z"
+      generation: 1
+      labels:
+        app.kubernetes.io/instance: build
+        pipelines.openshift.io/runtime: nodejs
+        pipelines.openshift.io/strategy: s2i
+        pipelines.openshift.io/used-by: build-cloud
+      managedFields:
+        - apiVersion: tekton.dev/v1beta1
+          fieldsType: FieldsV1
+          fieldsV1:
+            f:metadata:
+              f:annotations:
+                .: {}
+                f:argocd.argoproj.io/sync-options: {}
+              f:labels:
+                .: {}
+                f:app.kubernetes.io/instance: {}
+                f:pipelines.openshift.io/runtime: {}
+                f:pipelines.openshift.io/strategy: {}
+                f:pipelines.openshift.io/used-by: {}
+            f:spec:
+              .: {}
+              f:params: {}
+              f:tasks: {}
+              f:workspaces: {}
+          manager: argocd-application-controller
+          operation: Update
+          time: "2021-11-18T22:21:35Z"
+        - apiVersion: tekton.dev/v1beta1
+          fieldsType: FieldsV1
+          fieldsV1:
+            f:metadata:
+              f:annotations:
+                f:kubectl.kubernetes.io/last-applied-configuration: {}
+          manager: kubectl-client-side-apply
+          operation: Update
+          time: "2021-11-20T17:05:29Z"
+      name: nodejs-builder
+      namespace: build-templates
+      resourceVersion: "2372740"
+      uid: b24efc0c-2674-4a88-ab98-7a8084ed4bb3
+    spec:
+      params:
+        - description: Output image
+          name: IMAGE
+          type: string
+        - description: The git repository URL containing source code to be build
+          name: GIT_REPO
+          type: string
+        - description: The path to your source code
+          name: PATH_CONTEXT
+          type: string
+      tasks:
+        - name: s2i-nodejs-1-5-0
+          params:
+            - name: VERSION
+              value: 14-ubi8
+            - name: PATH_CONTEXT
+              value: $(params.PATH_CONTEXT)
+            - name: TLSVERIFY
+              value: "true"
+            - name: IMAGE
+              value: $(params.IMAGE)
+            - name: BUILDER_IMAGE
+              value: registry.redhat.io/rhel8/buildah@sha256:99cae35f40c7ec050fed3765b2b27e0b8bbea2aa2da7c16408e2ca13c60ff8ee
+          runAfter:
+            - git-clone-1-5-0
+          taskRef:
+            kind: ClusterTask
+            name: s2i-nodejs-1-5-0
+          workspaces:
+            - name: source
+              workspace: nodejs-source-code
+        - name: git-clone-1-5-0
+          params:
+            - name: url
+              value: $(params.GIT_REPO)
+            - name: submodules
+              value: "true"
+            - name: depth
+              value: "1"
+            - name: sslVerify
+              value: "true"
+            - name: deleteExisting
+              value: "true"
+            - name: verbose
+              value: "true"
+            - name: gitInitImage
+              value: registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:da1aedf0b17f2b9dd2a46edc93ff1c0582989414b902a28cd79bad8a035c9ea4
+            - name: userHome
+              value: /tekton/home
+          taskRef:
+            kind: ClusterTask
+            name: git-clone-1-5-0
+          workspaces:
+            - name: output
+              workspace: nodejs-source-code
+      workspaces:
+        - name: nodejs-source-code
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""
+  namespace: testpipelines
