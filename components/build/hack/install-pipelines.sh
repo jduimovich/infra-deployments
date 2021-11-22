@@ -12,6 +12,7 @@ declare -a totrim=(
         "metadata.annotations"  
         "metadata.resourceVersion"  
         "metadata.uid"   
+        "spec.volumeName"   
          ) 
 
 echo installing default pipelines in $PROJECT
@@ -42,7 +43,7 @@ do
 yq  e "$PATCH_NS" $i  -i  
 oc apply -f  $i
 #for debug comment out
-rm $i 
+#rm $i 
 done     
 oc get pipelines 
 
