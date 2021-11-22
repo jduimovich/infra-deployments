@@ -1,6 +1,5 @@
 resources:
-- as-default-pipeline.yaml
-- as-show-workspace.yaml  
+- app-studio-build-pipeline.yaml 
 - pvc.yaml  
 
 # Skip applying the Tekton operands while the Tekton operator is being installed.
