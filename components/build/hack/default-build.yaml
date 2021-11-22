@@ -13,5 +13,5 @@ spec:
   workspaces:
     - name: workspace
       persistentVolumeClaim:
-        claimName: as-default-workspace 
+        claimName: app-studio-default-workspace 
  
