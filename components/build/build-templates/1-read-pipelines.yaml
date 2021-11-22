@@ -4,5 +4,5 @@ metadata:
   name: pipeline-reader
 rules:
 - apiGroups: ["tekton.dev"]
-  resources: ["pipelines"]
+  resources: ["pipelines", "persistentvolumeclaims"]
   verbs: ["list", "get"]
