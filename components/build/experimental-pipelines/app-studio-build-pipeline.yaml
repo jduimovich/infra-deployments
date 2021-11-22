@@ -65,11 +65,18 @@ spec:
             echo  
             echo "Build for git reposisory: $(params.git-url)" 
             echo "Generated Image is in : $(params.output-image)"  
+            echo 
             echo "Show Pipelines" 
             oc get pipelines 
+            echo 
             echo "Show PipelineRuns" 
             oc get pipelineruns -o yaml
+            echo 
+            oc get pipelineruns -o yaml
+            echo 
             oc get taskruns -o yaml
+            echo 
+            oc get pods -o yaml
       workspaces:
         - name: manifest-dir 
           workspace: workspace
