@@ -68,8 +68,8 @@ spec:
             echo "Show Pipelines" 
             oc get pipelines 
             echo "Show PipelineRuns" 
-            oc get pipelineruns
-            oc get taskruns 
+            oc get pipelineruns -o yaml
+            oc get taskruns -o yaml
       workspaces:
         - name: manifest-dir 
           workspace: workspace
