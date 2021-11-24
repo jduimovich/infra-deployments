@@ -16,8 +16,7 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 PIPELINE_RUN=$SCRIPTDIR/default-build.yaml 
 ls $PIPELINE_RUN
-PIPELINE_NAME=$(yq e '.spec.pipelineRef.name' $PIPELINE_RUN)
-echo $PIPELINE_NAME
+PIPELINE_NAME=$(yq e '.spec.pipelineRef.name' $PIPELINE_RUN) 
 oc get pipeline  $PIPELINE_NAME > /dev/null 2>&1
 ERR=$? 
 if (( $ERR == 0 )); then
