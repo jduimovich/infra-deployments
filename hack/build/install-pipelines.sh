@@ -67,6 +67,5 @@ oc apply -f  $i
 #for debug comment out
 rm $i 
 done     
-oc get pipelines 
 
  
