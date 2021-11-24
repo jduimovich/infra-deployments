@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: app-studio-build-pipeline
+  name: docker-build
   namespace: build-templates
   labels:
     "pipelines.openshift.io/used-by" : "build-cloud"
