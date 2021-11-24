@@ -14,24 +14,25 @@
 
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-PIPELINE_RUN=$SCRIPTDIR/default-build.yaml 
-ls $PIPELINE_RUN
+PIPELINE_RUN=$SCRIPTDIR/default-build.yaml  
 PIPELINE_NAME=$(yq e '.spec.pipelineRef.name' $PIPELINE_RUN) 
 oc get pipeline  $PIPELINE_NAME > /dev/null 2>&1
 ERR=$? 
-if (( $ERR == 0 )); then
-  echo Pipeline $PIPELINE_NAME Installed 
-else 
+if (( $ERR != 0 )); then 
   $SCRIPTDIR/install-pipelines.sh
+fi 
+oc get pipeline  $PIPELINE_NAME > /dev/null 2>&1
+ERR=$? 
+if (( $ERR != 0 )); then
+  echo Error Pipeline $PIPELINE_NAME Missing - exiting 
+  exit -1
 fi 
 
 GITREPO=$1 
 if [ -z "$GITREPO" ]
 then
       echo Missing parameter Git URL to Build
-      exit -1
-else 
-      echo Build $GITREPO
+      exit -1 
 fi
 
 APPNAME=$(basename $GITREPO)
@@ -39,12 +40,16 @@ TAG=$(date +"%Y-%m-%d-%H%M%S")
 NS=$(oc config view --minify -o "jsonpath={..namespace}")
 IMG=image-registry.openshift-image-registry.svc:5000/$NS/$APPNAME
 
-echo "Building $GITREPO in build-$TAG"
+echo
+echo "Building $GITREPO"
+echo "Build Name: build-$TAG"
 echo "Namespace: " $NS
 echo "Image: " $IMG
+echo "Pipeline: " $PIPELINE_NAME 
 
 yq -M e ".spec.params[0].value=\"$GITREPO\"" $PIPELINE_RUN | \
   yq -M e ".spec.params[1].value=\"$IMG\"" - | \
   yq -M e ".metadata.name=\"build-$TAG\"" - | \
   oc apply -f -
 
+echo
