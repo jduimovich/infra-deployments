@@ -2,13 +2,15 @@
 
 # This script is representative of how A HAS Application will launch a pipelinerun
 # to perform a build. 
-# See default-build for the sample pipeline run yaml.
-# To launch a build HAS will need to 
-# - pass the URL for REPO
-# - pass the destination for the IMAGE
-# - add bindings for the SPI to ensure access to the repo and the image registry
-# This script installs pipelines needed for the default build but this mechanism will chain 
-
+# See default-build.yaml for the sample pipeline run yaml.
+# To launch a build HAS will need to pass parameters
+# - spec.params[GITURL] the URL for REPO
+# - pspec.params[IMAGE] for the IMAGE
+# - add bindings for the SPI to ensure access to the GITURL and the IMAGE registry
+# This script installs pipelines needed for the default build but this mechanism will change
+# The type of build is currently fixed at docker
+# An imported HAS Application will detect language and build type and map to a 
+# pipeline name which will be provided by the Build Service
 
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
