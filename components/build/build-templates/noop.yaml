@@ -27,6 +27,7 @@ spec:
             echo "Simple Pipeline "  
             echo "GIT URL: $(params.git-url)" 
             echo "Image URL: $(params.output-image)" 
+            echo "Team Change"
       workspaces:
         - name: manifest-dir 
           workspace: workspace
