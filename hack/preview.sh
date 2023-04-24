@@ -212,7 +212,7 @@ if ! timeout 100s bash -c "while ! kubectl get applications.argoproj.io -n opens
   kubectl get apps -n openshift-gitops -o name
   exit 1
 else
-  if [ "$(oc get applications.argoproj.io spi-in-cluster-local -n openshift-gitops -o jsonpath='{.status.health.status} {.status.sync.status}')" != "Healthy Synced" ]; then
+  if [ "$(oc get applications.argoproj.io spi-in-cluster-local -n openshift-gitops -o jsonpath='{.status.health.status} {.status.sync.status}')" != "Healthy Syncedx" ]; then
     echo Initializing SPI
     echo "--------------------------------------------"
     echo 
