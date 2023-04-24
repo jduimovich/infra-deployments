@@ -46,7 +46,7 @@ if $TOOLCHAIN ; then
     BASE_URL=$(oc get ingresses.config.openshift.io/cluster -o jsonpath={.spec.domain})
     RHSSO_URL="https://keycloak-dev-sso.$BASE_URL"
 
-    oc patch ToolchainConfig/config -n toolchain-host-operator --type=merge --patch-file=/dev/stdin << EOF
+    cat <<EOF > .auth 
 spec:
   host:
     registrationService:
@@ -62,6 +62,10 @@ spec:
         authClientLibraryURL: $RHSSO_URL/auth/js/keycloak.js
         authClientPublicKeysURL: $RHSSO_URL/auth/realms/redhat-external/protocol/openid-connect/certs
 EOF
+  echo "HACK 1 ------------------" 
+    oc patch ToolchainConfig/config -n toolchain-host-operator --type=merge --patch-file=.auth 
+    rm .auth
+  echo "END HACK 1 ------------------" 
   fi
 fi
 
@@ -210,13 +214,22 @@ if ! timeout 100s bash -c "while ! kubectl get applications.argoproj.io -n opens
 else
   if [ "$(oc get applications.argoproj.io spi-in-cluster-local -n openshift-gitops -o jsonpath='{.status.health.status} {.status.sync.status}')" != "Healthy Synced" ]; then
     echo Initializing SPI
-    curl https://raw.githubusercontent.com/redhat-appstudio/service-provider-integration-operator/main/hack/vault-init.sh | VAULT_PODNAME='vault-0' VAULT_NAMESPACE='spi-vault' bash -s 
+    echo "--------------------------------------------"
+    echo 
+    echo 
+    echo 
+    curl https://raw.githubusercontent.com/redhat-appstudio/e2e-tests/${E2E_TESTS_COMMIT_SHA:-main}/scripts/spi-e2e-setup.sh | VAULT_PODNAME='vault-0' VAULT_NAMESPACE='spi-vault' bash -s
     SPI_APP_ROLE_FILE=$ROOT/.tmp/approle_secret.yaml
     if [ -f "$SPI_APP_ROLE_FILE" ]; then
         echo "$SPI_APP_ROLE_FILE exists."
         kubectl apply -f $SPI_APP_ROLE_FILE  -n spi-system
     fi
+    echo 
+    echo "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+    echo
+    echo
     echo "Vault init complete"
+    sleep 10
   else
      echo "Vault initialization skipped"
   fi
