@@ -54,7 +54,7 @@ if $TOOLCHAIN ; then
     BASE_URL=$(oc get ingresses.config.openshift.io/cluster -o jsonpath={.spec.domain})
     RHSSO_URL="https://keycloak-dev-sso.$BASE_URL"
 
-    oc patch ToolchainConfig/config -n toolchain-host-operator --type=merge --patch-file=/dev/stdin << EOF
+    cat <<EOF > .auth 
 spec:
   host:
     registrationService:
@@ -70,6 +70,8 @@ spec:
         authClientLibraryURL: $RHSSO_URL/auth/js/keycloak.js
         authClientPublicKeysURL: $RHSSO_URL/auth/realms/redhat-external/protocol/openid-connect/certs
 EOF
+    oc patch ToolchainConfig/config -n toolchain-host-operator --type=merge --patch-file=.auth 
+    rm .auth
   fi
 fi
 
