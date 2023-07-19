@@ -1436,4 +1436,16 @@ spec:
         username: user1
         clientRoles:
           realm-management:
-            - "manage-users" 
+            - "manage-users"
+      - credentials:
+          - type: password
+            value: user2
+        email: user2@user.us
+        emailVerified: true
+        enabled: true
+        firstName: user2
+        id: user2
+        username: user2
+        clientRoles:
+          realm-management:
+            - "manage-users"
